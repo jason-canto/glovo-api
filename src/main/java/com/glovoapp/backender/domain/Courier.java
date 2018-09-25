@@ -2,6 +2,8 @@ package com.glovoapp.backender.domain;
 
 import java.util.Objects;
 
+import com.glovoapp.backender.enums.Vehicle;
+
 import lombok.Builder;
 import lombok.Data;
 

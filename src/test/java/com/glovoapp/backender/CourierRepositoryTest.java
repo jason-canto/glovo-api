@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import com.glovoapp.backender.domain.Courier;
 import com.glovoapp.backender.domain.Location;
-import com.glovoapp.backender.domain.Vehicle;
+import com.glovoapp.backender.enums.Vehicle;
 import com.glovoapp.backender.repository.CourierRepository;
 
 import java.util.List;
