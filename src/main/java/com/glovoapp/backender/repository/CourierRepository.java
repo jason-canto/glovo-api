@@ -70,9 +70,8 @@ public class CourierRepository {
 				.filter(o -> isLongDistanceVehicle(courier.getVehicle())
 						|| DistanceCalculator.calculateDistance(o.getPickup(), courier.getLocation()) <= maxKmDistance)
 				.filter(o -> courier.getBox()
-						|| Arrays.asList(boxOrder).stream().noneMatch(o.getDescription()::contains))
-				.sorted(Comparator.comparing(Order::getVip).reversed())
-				.sorted(Comparator.comparing(Order::getFood).reversed())
+						|| Arrays.asList(boxOrder).stream().noneMatch(o.getDescription().toLowerCase()::contains))
+				.sorted(getSorting(courier))
 				.map(o -> new OrderVM(o.getId(), o.getDescription()))
 				.collect(Collectors.toList());
 	}
@@ -81,18 +80,28 @@ public class CourierRepository {
 		return Vehicle.ELECTRIC_SCOOTER.equals(vehicle) || Vehicle.MOTORCYCLE.equals(vehicle);
 	}
 
-	public Comparator<Order> getSortingByType(Priority priority) {
+	public int teste(Order o, Courier courier) {
+		return (int) DistanceCalculator.calculateDistance(o.getPickup(), courier.getLocation()) * 1000 / 100;
+	}
+
+	public Comparator<Order> getSortingByType(Priority priority, Courier courier) {
 		switch(priority) {
 			case FOOD:
 				return Comparator.comparing(Order::getFood).reversed();
 			case VIP:
 				return Comparator.comparing(Order::getVip).reversed();
 			case DISTANCE:
-				return null;
+				return Comparator.comparingDouble((Order o) -> (int) (DistanceCalculator.calculateDistance(o.getPickup(), courier.getLocation()) * 1000) / distance);
 		default:
-			break; 
-				
+			break;
 		}
 		return null;
 	}
+
+	public Comparator<Order> getSorting(Courier courier) {
+		return getSortingByType(Priority.valueOf(sortingPriorities[0]), courier)
+				.thenComparing(getSortingByType(Priority.valueOf(sortingPriorities[1]), courier))
+				.thenComparing(getSortingByType(Priority.valueOf(sortingPriorities[2]), courier));
+	}
+
 }
