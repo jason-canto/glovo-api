@@ -92,8 +92,6 @@ public class CourierRepository {
 				return Comparator.comparing(Order::getVip).reversed();
 			case DISTANCE:
 				return Comparator.comparingDouble((Order o) -> (int) (DistanceCalculator.calculateDistance(o.getPickup(), courier.getLocation()) * 1000) / distance);
-		default:
-			break;
 		}
 		return null;
 	}
