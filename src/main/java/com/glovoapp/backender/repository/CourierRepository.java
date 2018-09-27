@@ -63,25 +63,23 @@ public class CourierRepository {
 		return new ArrayList<>(couriers);
 	}
 
-	public List<OrderVM> findOrdersByCourierById(String courierId) {
-		Courier courier = findById(courierId);
-
-		return orders.findAll().stream()
-				.filter(o -> isLongDistanceVehicle(courier.getVehicle())
-						|| DistanceCalculator.calculateDistance(o.getPickup(), courier.getLocation()) <= maxKmDistance)
-				.filter(o -> courier.getBox()
-						|| Arrays.asList(boxOrder).stream().noneMatch(o.getDescription().toLowerCase()::contains))
-				.sorted(getSorting(courier))
-				.map(o -> new OrderVM(o.getId(), o.getDescription()))
-				.collect(Collectors.toList());
+	public List<OrderVM> findOrdersByCourierById(Courier courier) {
+		if(courier != null) {
+			return orders.findAll().stream()
+					.filter(o -> isLongDistanceVehicle(courier.getVehicle())
+							|| DistanceCalculator.calculateDistance(o.getPickup(), courier.getLocation()) <= maxKmDistance)
+					.filter(o -> courier.getBox()
+							|| Arrays.asList(boxOrder).stream().noneMatch(o.getDescription().toLowerCase()::contains))
+					.sorted(getSorting(courier))
+					.map(o -> new OrderVM(o.getId(), o.getDescription()))
+					.collect(Collectors.toList());
+		} else {
+			return new ArrayList<>();
+		}
 	}
 
 	public boolean isLongDistanceVehicle(Vehicle vehicle) {
 		return Vehicle.ELECTRIC_SCOOTER.equals(vehicle) || Vehicle.MOTORCYCLE.equals(vehicle);
-	}
-
-	public int teste(Order o, Courier courier) {
-		return (int) DistanceCalculator.calculateDistance(o.getPickup(), courier.getLocation()) * 1000 / 100;
 	}
 
 	public Comparator<Order> getSortingByType(Priority priority, Courier courier) {

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.glovoapp.backender.domain.Courier;
 import com.glovoapp.backender.dto.OrderVM;
 import com.glovoapp.backender.repository.CourierRepository;
 import com.glovoapp.backender.repository.OrderRepository;
@@ -44,7 +45,8 @@ public class API {
     @RequestMapping("/orders/{courierId}")
     @ResponseBody
     public List<OrderVM> getOrdersByCourierById(@PathVariable String courierId) {
-        return corrierRepository.findOrdersByCourierById(courierId);
+        Courier courier = corrierRepository.findById(courierId);
+        return corrierRepository.findOrdersByCourierById(courier);
     }
 
 }
